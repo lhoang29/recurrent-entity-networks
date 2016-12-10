@@ -11,7 +11,6 @@ class Dataset(object):
     def __init__(self, dataset_path, batch_size):
         self.dataset_dir = os.path.dirname(dataset_path)
         self.batch_size = batch_size
-        self.examples_per_epoch = 10000
 
         with open(dataset_path) as f:
             metadata = json.load(f)
@@ -20,6 +19,7 @@ class Dataset(object):
         self.max_story_length = metadata['max_story_length']
         self.max_query_length = metadata['max_query_length']
         self.dataset_size = metadata['dataset_size']
+        self.examples_per_epoch = self.dataset_size
         self.vocab_size = metadata['vocab_size']
         self.tokens = metadata['tokens']
         self.datasets = metadata['datasets']

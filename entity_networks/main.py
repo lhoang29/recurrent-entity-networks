@@ -19,13 +19,13 @@ FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_integer('batch_size', 32, 'Batch size.')
 tf.app.flags.DEFINE_integer('embedding_size', 100, 'Embedding size.')
 tf.app.flags.DEFINE_integer('num_blocks', 20, 'Number of memory blocks.')
-tf.app.flags.DEFINE_integer('num_epochs', 200, 'Number of training epochs.')
+tf.app.flags.DEFINE_integer('num_epochs', 100, 'Number of training epochs.')
 tf.app.flags.DEFINE_integer('seed', 67, 'Random seed.')
 tf.app.flags.DEFINE_integer('early_stopping_rounds', 10, 'Number of epochs before early stopping.')
 tf.app.flags.DEFINE_float('learning_rate', 1e-2, 'Base learning rate.')
 tf.app.flags.DEFINE_float('clip_gradients', 40.0, 'Clip the global norm of the gradients to this value.')
 tf.app.flags.DEFINE_string('model_dir', 'logs/', 'Model directory.')
-tf.app.flags.DEFINE_string('dataset', 'datasets/processed/qa1_single-supporting-fact_10k.json', 'Dataset path.')
+tf.app.flags.DEFINE_string('dataset', 'datasets/processed/qa1_single-supporting-fact_1k.json', 'Dataset path.')
 tf.app.flags.DEFINE_boolean('debug', False, 'Debug mode to enable more summaries and numerical checks.')
 
 def main(_):
@@ -76,7 +76,12 @@ def main(_):
 
     dataset_name = os.path.splitext(os.path.basename(FLAGS.dataset))[0]
     timestamp = int(time.time())
-    model_dir = os.path.join(FLAGS.model_dir, dataset_name, str(timestamp))
+
+    dataset_dir = os.path.join(FLAGS.model_dir, dataset_name)
+    if not os.path.exists(dataset_dir):
+        os.makedirs(dataset_dir)
+
+    model_dir = os.path.join(dataset_dir, str(timestamp))
     estimator = tf.contrib.learn.Estimator(
         model_dir=model_dir,
         model_fn=model_fn,
